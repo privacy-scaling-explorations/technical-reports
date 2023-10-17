@@ -11,7 +11,7 @@ The creation of this repository stems from our commitment to the open disseminat
 ## Repository Structure
 
 - `index.html`: The main HTML file that serves as the landing page for the PSE Technical Reports.
-- `papers/`: Directory containing the PDFs of the technical reports.
+- `reports/`: Directory containing the PDFs of the technical reports.
 
 ## License
 
