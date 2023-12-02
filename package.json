@@ -1,0 +1,20 @@
+{
+  "name": "pse-technical-reports",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "node ./prepare.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/privacy-scaling-explorations/technical-reports.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/privacy-scaling-explorations/technical-reports/issues"
+  },
+  "dependencies": {
+    "handlebars": "^4.7.8"
+  }
+}
