@@ -15,6 +15,7 @@
         --cinnabar: #c3ccc9;
         --anakiwa-300: #a3dff0;
         --anakiwa-400: #50c3e0;
+        --anakiwa-500: #00a7d0;
 
         color: black;
         margin: 0;
@@ -86,11 +87,15 @@
 
       a {
         font-family: "DM Sans", sans-serif;
-        color: var(--anakiwa-400);
+        color: var(--anakiwa-500);
+      }
+
+      a:hover {
+        filter: brightness(80%);
       }
 
       a:visted {
-        color: var(--anakiwa-400);
+        color: var(--anakiwa-500);
       }
 
       ul {
@@ -114,7 +119,7 @@
   <body>
     <img src="assets/logo-full.png" alt="logo" id="logo" />
     <hr />
-    <h1>Technical Reports</h1>
+    <h1>PSE Technical Reports</h1>
     <p>
       Welcome to the Privacy and Scaling Explorations (PSE) Technical Reports
       website. This site hosts a curated collection of research papers,
@@ -142,7 +147,12 @@
       <li>
         <h4>{{title}}</h4>
         <p>{{subtitle}}</p>
-        <a href="{{link}}" target="_blank">view</a>
+        <span>[</span>
+        <a href="{{link_pdf}}" target="_blank">pdf</a>,
+        <a href="{{link_md}}" target="_blank">markdown</a>,
+        <a href="{{link_tex}}" target="_blank">latex</a>,
+        <a href="{{link_org}}" target="_blank">org</a>
+        <span>]</span>
       </li>
       {{/reports}}
     </ul>

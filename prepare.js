@@ -27,13 +27,19 @@ fs.readdirSync("./reports").forEach((dir) => {
       const subtitle = report
         .match(/(?:#\+subtitle: )([A-z\ ]+)/g)[0]
         .substring(12);
-      const link = `reports/${dir}/${subdir}/${subdir}.pdf`;
+      const link_md = `reports/${dir}/${subdir}/${subdir}.md`;
+      const link_org = `reports/${dir}/${subdir}/${subdir}.org`;
+      const link_pdf = `reports/${dir}/${subdir}/${subdir}.pdf`;
+      const link_tex = `reports/${dir}/${subdir}/${subdir}.tex`;
 
       // add the report to the section
       section.reports.push({
         title,
         subtitle,
-        link,
+        link_md,
+        link_org,
+        link_pdf,
+        link_tex,
       });
     });
 
