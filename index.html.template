@@ -140,18 +140,22 @@
       the Ethereum ecosystem.
     </p>
     <hr />
-    <h3>Applied ZKP Primitives</h3>
+    {{#sections}}
+    <h3>{{title}}</h3>
     <ul>
+      {{#reports}}
       <li>
-        <h4>UniRep</h4>
-        <p>A Protocol for Sharing Credibility Across Anonymous Accounts on Social Platforms</p>
+        <h4>{{title}}</h4>
+        <p>{{subtitle}}</p>
         <span>[</span>
-        <a href="reports/Applied_ZKP_Primitives/UniRep/UniRep.pdf" target="_blank">pdf</a>,
-        <a href="reports/Applied_ZKP_Primitives/UniRep/UniRep.md" target="_blank">markdown</a>,
-        <a href="reports/Applied_ZKP_Primitives/UniRep/UniRep.tex" target="_blank">latex</a>,
-        <a href="reports/Applied_ZKP_Primitives/UniRep/UniRep.org" target="_blank">org</a>
+        <a href="{{link_pdf}}" target="_blank">pdf</a>,
+        <a href="{{link_md}}" target="_blank">markdown</a>,
+        <a href="{{link_tex}}" target="_blank">latex</a>,
+        <a href="{{link_org}}" target="_blank">org</a>
         <span>]</span>
       </li>
+      {{/reports}}
     </ul>
+    {{/sections}}
   </body>
 </html>
