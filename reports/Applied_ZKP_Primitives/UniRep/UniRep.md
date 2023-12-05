@@ -16,7 +16,7 @@ Given this dilemma, there's a clear need for a system that marries the two seemi
 
 ### Terms and definitions
 
-- **Attesters**: Entities or contracts that provide **attestations** to users, aggregating into user data.
+- **Attesters**: Entities or contracts that provide **attestations** to users, aggregating into user data. In typical use cases, like Reddit, the platform acts as the attester.
 - **Users**: Entities that acquire data from attesters and **validate received data**.
 - **Epoch**: A cycle in the UniRep system marked by updated state and epoch trees. Attesters determine the epoch duration. User epoch keys can accumulate attestations within an epoch.
 - **Epoch Key**: Temporary public identifiers for users.
@@ -36,12 +36,16 @@ Attesters are joined into the system through the `attesterSignUp` function, whic
 
 ### Epoch Keys
 
-Epoch keys serve as temporary identifiers, regenerated per epoch. They're computed using an `identitySecret`, unique to each user.
+Epoch keys serve as temporary identifiers, regenerated per epoch. They're computed using an `identitySecret`, unique to each user. Epoch keys are stored in the format:
 
 ```js
 const field = attesterId + (epoch << 160) + (nonce << 208) + (chainId << 216);
 poseidon2([identitySecret, field]);
 ```
+
+| chain id | nonce  | epoch   | attester id |
+| :------- | :----- | :------ | :---------- |
+| 36 bits  | 8 bits | 48 bits | 160 bits    |
 
 The `nonce` is a value between `0` and `numEpochKeyNoncePerEpoch - 1` so that users may have `numEpochKeyNoncePerEpoch` epoch keys per epoch.
 
@@ -63,7 +67,7 @@ For each epoch, Attesters submit attestations in epoch trees, containing the dat
 
 Users engage in a User State Transition (UST), wherein the proof of several values is required, including a proof of a state tree leaf's presence in the previous epoch's tree, the validity of the epoch tree root, and the state tree root in the history tree. The UST process then requires users to aggregate data from each valid epoch key, outputting the combined data to be added to the new state tree and new epoch keys to be used for the following epoch. If an epoch key is not found in the epoch tree, it will expire.
 
-Following the generation of the UST proof, the proof is submitted on-chain where validations are made to confirm the integrity of the history tree root and check the uniqueness of the first output epoch key. The uniqueness of the first output epoch key is required as a nullifier to prevent duplicate USTs.
+Following the generation of the UST proof, the proof is submitted on-chain where validations are made to confirm the validity of the proof and check the merkle tree root. The uniqueness of the nullifier is to prevent duplicate USTs.
 
 ### Data Storage
 
@@ -74,6 +78,10 @@ The State Tree stores the user's state values after signing up and after a UST i
 ```js
 H(H(identitySecret, attesterId + (epoch << 160) + (chainId << 208)), H(data));
 ```
+
+| chain id | epoch   | attester id |
+| :------- | :------ | :---------- |
+| 36 bits  | 48 bits | 160 bits    |
 
 The Epoch Tree contains the data transitions received by the epoch key in the epoch in each leaf stored in the format:
 

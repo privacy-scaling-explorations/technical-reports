@@ -1,4 +1,4 @@
-% Created 2023-10-27 Fri 09:46
+% Created 2023-12-01 Fri 10:16
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -28,11 +28,11 @@
 \tableofcontents
 
 \section{Abstract}
-\label{sec:org5f8ca5f}
+\label{sec:org80d1cec}
 
 A majority of digital platforms and systems do not permit users to engage anonymously while also retaining the ability to prove credibility on the platform. For example, on Reddit, credibility is determined by the karma system. When creating anonymous accounts, users start with zero karma, reducing trustworthiness. UniRep proposes a solution where users can establish anonymous profiles, yet provide proof of their aggregate reputation without disclosing which profiles are theirs. This is achieved through epoch-based attestations, where the platform confirms account reputation updates, and users validate their account ownership and updated reputations post each epoch.
 \section{Introduction}
-\label{sec:orgb3cde13}
+\label{sec:org70db807}
 
 In the digital era, the balance between online privacy and maintaining one's reputation on digital platforms is increasingly complex. Privacy, motivated by security, freedom of expression, or the desire for personal anonymity, is a coveted asset. However, digital platforms, designed around the ethos of reputation-building, often pose a conundrum for users. Positive contributions on these platforms translate to reputational gains, which in turn determine a user's credibility and influence within the community.
 
@@ -40,48 +40,56 @@ Despite the benefits of an established reputation, there are moments when even s
 
 Given this dilemma, there's a clear need for a system that marries the two seemingly contrasting ideals of privacy and reputation. UniRep aims to address this gap, proposing a solution that upholds the sanctity of anonymity while allowing users to leverage their hard-earned reputation.
 \section{Preliminaries}
-\label{sec:orgfd26e6e}
+\label{sec:org706d9ae}
 
 \subsection{Terms and definitions}
-\label{sec:orgf71e98b}
+\label{sec:orgdc97759}
 
 \subsubsection{Attesters}
-\label{sec:orge06bb9e}
-Entities or contracts that provide \textbf{\textbf{attestations}} to users, aggregating into user data.
+\label{sec:org6803040}
+Entities or contracts that provide \textbf{\textbf{attestations}} to users, aggregating into user data. In typical use cases, like Reddit, the platform acts as the attester.
 \subsubsection{Users}
-\label{sec:org4387de1}
+\label{sec:org9857fc0}
 Entities that acquire data from attesters and \textbf{\textbf{validate received data}}.
 \subsubsection{Epoch}
-\label{sec:org88aad3f}
+\label{sec:org55f570c}
 A cycle in the UniRep system marked by updated state and epoch trees. Attesters determine the epoch duration. User epoch keys can accumulate attestations within an epoch.
 \subsubsection{Epoch Key}
-\label{sec:org7101571}
+\label{sec:orgbf9b614}
 Temporary public identifiers for users.
 \subsubsection{User State Transition (UST)}
-\label{sec:org19b9fec}
+\label{sec:org350a8a3}
 A process that combines a user's received data in an epoch to yield a new state tree.
 \subsection{Assumptions}
-\label{sec:orge900b6d}
+\label{sec:org3fd3b24}
 \begin{itemize}
 \item The proof system is built on a phase 2 trusted setup.
 \item Network transaction costs for attestations and user registrations are considered moderate.
 \item Users retain their reputation data to produce User State Transition proofs.
 \end{itemize}
 \subsection{Proposed Protocol}
-\label{sec:orgaf0a329}
+\label{sec:orgb12f105}
 
 The UniRep protocol is designed to function on an epoch-based mechanism, facilitating interactions between attestors and users, primarily for the management of reputations and state transitions. The protocol is implemented via a smart contract, which handles essential operations including registrations, attestations, and the maintenance of various cryptographic trees.
 
 Attesters are joined into the system through the `attesterSignUp` function, which assigns a unique attesterId. Users also enter the system by registering through the `userSignUp` function and providing a distinct signup proof.
 \subsubsection{Epoch Keys}
-\label{sec:orgebd34c9}
+\label{sec:org75b675e}
 
-Epoch keys serve as temporary identifiers, regenerated per epoch. They're computed using an `identitySecret`, unique to each user.
+Epoch keys serve as temporary identifiers, regenerated per epoch. They're computed using an `identitySecret`, unique to each user. Epoch keys are stored in the format:
 
 \begin{verbatim}
 const field = attesterId + (epoch << 160) + (nonce << 208) + (chainId << 216);
 poseidon2([identitySecret, field]);
 \end{verbatim}
+
+\begin{center}
+\begin{tabular}{llll}
+chain id & nonce & epoch & attester id\\[0pt]
+\hline
+36 bits & 8 bits & 48 bits & 160 bits\\[0pt]
+\end{tabular}
+\end{center}
 
 The `nonce` is a value between `0` and `numEpochKeyNoncePerEpoch - 1` so that users may have `numEpochKeyNoncePerEpoch` epoch keys per epoch.
 
@@ -97,15 +105,15 @@ data[0] = (old_data[0] + new_data[0]) % SNARK_SCALAR_FIELD;
 
 Any data fields that do not use the addition mechanism instead use the replacement mechanism. This mechanism stores the data in `205` upper bits for the data and `48` lower bits for the nonce so that the protocol may order the attestations.
 \subsubsection{User State Transitions}
-\label{sec:org555fe5d}
+\label{sec:orgf01cbeb}
 
 For each epoch, Attesters submit attestations in epoch trees, containing the data changes for each epoch key. While attesters are trusted to provide accurate updates, the protocol ensures user anonymity is preserved making it difficult to provide biased data toward any user.
 
 Users engage in a User State Transition (UST), wherein the proof of several values is required, including a proof of a state tree leaf's presence in the previous epoch's tree, the validity of the epoch tree root, and the state tree root in the history tree. The UST process then requires users to aggregate data from each valid epoch key, outputting the combined data to be added to the new state tree and new epoch keys to be used for the following epoch. If an epoch key is not found in the epoch tree, it will expire.
 
-Following the generation of the UST proof, the proof is submitted on-chain where validations are made to confirm the integrity of the history tree root and check the uniqueness of the first output epoch key. The uniqueness of the first output epoch key is required as a nullifier to prevent duplicate USTs.
+Following the generation of the UST proof, the proof is submitted on-chain where validations are made to confirm the validity of the proof and check the merkle tree root. The uniqueness of the nullifier is to prevent duplicate USTs.
 \subsubsection{Data Storage}
-\label{sec:org4e3128f}
+\label{sec:orge713ac7}
 
 The data required for the protocol operations is stored in three main trees: The State Tree, the Epoch Tree, and the History Tree.
 
@@ -114,6 +122,14 @@ The State Tree stores the user's state values after signing up and after a UST i
 \begin{verbatim}
 H(H(identitySecret, attesterId + (epoch << 160) + (chainId << 208)), H(data))
 \end{verbatim}
+
+\begin{center}
+\begin{tabular}{lll}
+chain id & epoch & attester id\\[0pt]
+\hline
+36 bits & 48 bits & 160 bits\\[0pt]
+\end{tabular}
+\end{center}
 
 The Epoch Tree contains the data transitions received by the epoch key in the epoch in each leaf stored in the format:
 
@@ -127,7 +143,7 @@ The History tree contains valid combinations of state and epoch tree roots in ea
 H(stateTreeRoot, epochTreeRoot);
 \end{verbatim}
 \subsection{Discussion}
-\label{sec:org0342ec7}
+\label{sec:org9b94eb0}
 
 UniRep's introduction to the digital ecosystem offers a transformative solution to a long-standing issue plaguing social platforms: the challenge of creating anonymous accounts without losing previously accrued reputational capital. In platforms such as Reddit, where reputation (or karma) directly influences the perceived credibility of a user, starting from scratch isn't just an inconvenience but a significant impediment. Anonymity often comes at the cost of trust, leading users to face skepticism and undermining their contributions.
 
@@ -139,7 +155,7 @@ However, while UniRep's potential applications are promising, there are challeng
 
 In summary, while UniRep introduces a compelling solution to the dichotomy of privacy and reputation on digital platforms, its widespread adoption and success will depend on addressing the economic and technical challenges inherent in its design.
 \subsection{Conclusion}
-\label{sec:orga0b6463}
+\label{sec:orgaae5ffe}
 
 UniRep introduces a novel approach to address the longstanding issue of balancing online privacy with the preservation of reputation on digital platforms. By enabling users to aggregate their reputation across anonymous accounts, the protocol fosters trustworthiness without compromising privacy. As digital interactions continue to evolve, protocols like UniRep are poised to redefine online credibility paradigms.
 \end{document}
