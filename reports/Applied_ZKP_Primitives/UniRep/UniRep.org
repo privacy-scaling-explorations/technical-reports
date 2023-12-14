@@ -1,5 +1,5 @@
 #+title: UniRep
-#+subtitle: A Protocol for Sharing Credibility Across Anonymous Accounts on Social Platforms
+#+subtitle: A Protocol for Sharing Credibility Across Anonymous Accounts on Digital Platforms
 #+AUTHOR: Privacy & Scaling Explorations
 #+DESCRIPTION: UniRep Technical Report by the Privacy & Scaling Explorations Team
 #+LANGUAGE: English

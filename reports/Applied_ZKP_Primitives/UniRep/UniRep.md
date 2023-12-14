@@ -1,4 +1,4 @@
-# UniRep: A Protocol for Sharing Credibility Across Anonymous Accounts on Social Platforms
+# UniRep: A Protocol for Sharing Credibility Across Anonymous Accounts on Digital Platforms
 
 ## Abstract
 
