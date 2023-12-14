@@ -22,12 +22,12 @@
       }
 
       html {
-        margin: 2rem;
+        margin: 2rem 0rem;
         background-color: var(--white);
       }
 
       body {
-        max-width: 650px;
+        width: 650px;
         margin: auto;
       }
 
@@ -113,6 +113,20 @@
       hr {
         color: var(--black);
         margin: 2rem 0;
+      }
+
+      @media (max-width: 1080px) {
+        body {
+          box-sizing: border-box;
+          width: 100vw;
+          padding: 0 2rem;
+          margin: 0;
+        }
+
+        #logo {
+          width: 30vw;
+          height: unset;
+        }
       }
     </style>
   </head>
