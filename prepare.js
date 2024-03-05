@@ -3,20 +3,20 @@ const fs = require("fs");
 const template = fs.readFileSync("./index.html.template", "utf8");
 
 const data = {
-  sections: [],
+  sections: []
 };
 
 // loop through each directory in the ./reports folder
-fs.readdirSync("./reports").forEach((dir) => {
+fs.readdirSync("./reports").forEach(dir => {
   // check if the directory is a directory
   if (fs.lstatSync(`./reports/${dir}`).isDirectory()) {
     const section = {
       title: dir.replace(/_/g, " "),
-      reports: [],
+      reports: []
     };
 
     // loop through each file in the directory
-    fs.readdirSync(`./reports/${dir}`).forEach((subdir) => {
+    fs.readdirSync(`./reports/${dir}`).forEach(subdir => {
       if (!fs.lstatSync(`./reports/${dir}/${subdir}`).isDirectory()) return;
       // read the org file
       const report = fs.readFileSync(
@@ -27,19 +27,15 @@ fs.readdirSync("./reports").forEach((dir) => {
       const subtitle = report
         .match(/(?:#\+subtitle: )([A-z\ ]+)/g)[0]
         .substring(12);
-      const link_md = `reports/${dir}/${subdir}/${subdir}.md`;
-      const link_org = `reports/${dir}/${subdir}/${subdir}.org`;
+      const link_md = `https://github.com/privacy-scaling-explorations/technical-reports/blob/main/reports/${dir}/${subdir}/${subdir}.md`;
       const link_pdf = `reports/${dir}/${subdir}/${subdir}.pdf`;
-      const link_tex = `reports/${dir}/${subdir}/${subdir}.tex`;
 
       // add the report to the section
       section.reports.push({
         title,
         subtitle,
         link_md,
-        link_org,
-        link_pdf,
-        link_tex,
+        link_pdf
       });
     });
 

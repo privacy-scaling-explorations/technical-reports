@@ -164,9 +164,7 @@
         <p>{{subtitle}}</p>
         <span>[</span>
         <a href="{{link_pdf}}" target="_blank">pdf</a>,
-        <a href="{{link_md}}" target="_blank">markdown</a>,
-        <a href="{{link_tex}}" target="_blank">latex</a>,
-        <a href="{{link_org}}" target="_blank">org</a>
+        <a href="{{link_md}}" target="_blank">markdown</a>
         <span>]</span>
       </li>
       {{/reports}}
